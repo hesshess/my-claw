@@ -29,6 +29,7 @@ function App() {
     },
     onMessage: (event) =>
       setMessages((prev) => [...prev, JSON.parse(event.data)]),
+	onStateUpdateError: () => console.log('cant do that'),
   });
   const sendMessage = () => {
     agent.send(message);

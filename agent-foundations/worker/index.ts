@@ -42,6 +42,12 @@ export class ChattingRoomAgent extends Agent<Env, ChattingRoomState> {
     if (source !== "server") throw new Error("cant do this");
   }
 
+  shouldConnectionBeReadonly(_connection: Connection, ctx: ConnectionContext): boolean {
+	const url = new URL(ctx.request.url);
+	const nickname = url.searchParams.get('nickname') ?? 'anon';
+	return nickname.includes('read');
+  }
+
   onConnect(connection: Connection, ctx: ConnectionContext) {
 	const url = new URL(ctx.request.url);
 	const nickname = url.searchParams.get('nickname') ?? 'anon';
@@ -72,6 +78,7 @@ export class ChattingRoomAgent extends Agent<Env, ChattingRoomState> {
 	@callable()
 	loadHistory(){
 		const {connection} = getCurrentAgent<ChattingRoomAgent>();
+		// this.setConnectionReadonly(connection, true);
 		console.log(connection?.state,'loaded history');
 		return this.sql`SELECT * FROM message ORDER BY created_at ASC LIMIT 100`;
 	}
