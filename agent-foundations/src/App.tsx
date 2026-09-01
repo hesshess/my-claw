@@ -1,28 +1,34 @@
 import { useAgent } from "agents/react";
 import { useState } from "react";
-import { ChattingRoomAgent} from '../worker/index'
-import type {PingPongState} from '../worker/index'
-
-
+import type { ChattingRoomAgent, ChattingRoomState } from "../worker/index";
 
 function App() {
-	const [isConnected, setIsConnected] = useState(false);
-	const[pingPongs, setPingPongs] = useState(0);
-	const agent = useAgent<ChattingRoomAgent, PingPongState>({
-		agent: 'AGENT',
-		onOpen: () => setIsConnected(true),
-		onStateUpdate: (state) => setPingPongs(state.pingPongCount),
-	});
+  const [isConnected, setIsConnected] = useState(false);
+  const [message, setMessage] = useState("");
+  const agent = useAgent<ChattingRoomAgent, ChattingRoomState>({
+    agent: "AGENT",
+    onOpen: () => setIsConnected(true),
+    onMessage: (event) => console.log(event),
+  });
+  const sendMessage = () => {
+    agent.send(message);
+    setMessage("");
+  };
+  if (!isConnected) return <h1>connecting...</h1>;
 
-	if (!isConnected) return <h1>connecting...</h1>;
-
-	return (
-	<div>
-		<h1>Ping Pong Agent</h1>
-		<h3>Count: {pingPongs}</h3>
-		
-	</div>
-	);
+  return (
+    <div>
+      <h1>Ping Pong Agent</h1>
+      <h3>Count: {agent?.state?.currentlyOnline}</h3>
+      <hr />
+			<form onSubmit={(e)=>{
+				e.preventDefault();
+				sendMessage();
+			}}>
+				<input type="text" value={message}  onChange={(e)=>setMessage(e.target.value)} placeholder="Type a message..." autoFocus/>
+			</form>
+    </div>
+  );
 }
 
 export default App;

@@ -1,24 +1,28 @@
-import { Agent, routeAgentRequest } from "agents";
+import { Agent, routeAgentRequest, type Connection, type WSMessage } from "agents";
 
-export type PingPongState = {
-  pingPongCount: number;
+export type ChattingRoomState = {
+  currentlyOnline: number;
 };
 
-export class ChattingRoomAgent extends Agent<Env, PingPongState> {
+export class ChattingRoomAgent extends Agent<Env, ChattingRoomState> {
   initialState = {
-    pingPongCount: 0,
+    currentlyOnline: 0,
   };
 
-  increment() {
-    this.setState({
-      pingPongCount: this.state.pingPongCount + 1,
-    });
+  onConnect(){
+	this.setState({
+		currentlyOnline: this.state.currentlyOnline +1
+	})
   }
 
-  decrement() {
-    this.setState({
-      pingPongCount: this.state.pingPongCount - 1,
-    });
+  onClose(){
+	this.setState({
+		currentlyOnline: this.state.currentlyOnline -1,
+	})
+  }
+  onMessage(connection: Connection, message: WSMessage): void | Promise<void> {
+	console.log(message);
+	connection.send('back');
   }
 }
 
