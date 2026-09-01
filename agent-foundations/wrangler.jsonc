@@ -14,11 +14,14 @@
 		"enabled": true,
 	},
 	"upload_source_maps": true,
+	"vars": {
+		"ROOM_TOKEN": "demo-poll-token",
+	},
 	"compatibility_flags": ["nodejs_compat"],
 	"durable_objects": {
 		"bindings": [
 			{
-				"class_name": "ChattingRoomAgent",
+				"class_name": "PollAgent",
 				"name": "AGENT",
 			},
 		],
@@ -27,6 +30,15 @@
 		{
 			"new_sqlite_classes": ["ChattingRoomAgent"],
 			"tag": "v1",
+		},
+		{
+			"renamed_classes": [
+				{
+					"from": "ChattingRoomAgent",
+					"to": "PollAgent",
+				},
+			],
+			"tag": "v2",
 		},
 	],
 	/**
@@ -40,13 +52,6 @@
 	 * databases, object storage, AI inference, real-time communication and more.
 	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
 	 */
-	/**
-	 * Environment Variables
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 * Note: Use secrets to store sensitive data.
-	 * https://developers.cloudflare.com/workers/configuration/secrets/
-	 */
-	// "vars": {  "MY_VARIABLE": "production_value" }
 	/**
 	 * Service Bindings (communicate between multiple Workers)
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
