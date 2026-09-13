@@ -7,6 +7,16 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
+	"ratelimits": [
+  {
+    "name": "RATE_LIMITER",
+    "namespace_id": "1301",
+    "simple": {
+      "limit": 10,
+      "period": 60
+    }
+  }
+],
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "think-framework",
 	"main": "worker/index.ts",
@@ -27,8 +37,8 @@
 	"durable_objects": {
 		"bindings": [
 			{
-				"class_name": "ThinkAgent",
-				"name": "ThinkAgent"
+				"class_name": "CoachAgent",
+				"name": "CoachAgent"
 			}
 		]
 	},
@@ -36,7 +46,7 @@
 		{
 			"tag": "1",
 			"new_sqlite_classes": [
-				"ThinkAgent"
+				"CoachAgent"
 			]
 		}
 	],
