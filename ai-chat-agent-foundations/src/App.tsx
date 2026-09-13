@@ -5,6 +5,7 @@ import { getToolName, isToolUIPart, type UIMessage } from "ai";
 function App() {
   const agent = useAgent({ agent: "PotatoChatAgent" });
 
+  
   const {
     messages,
     sendMessage,
@@ -15,14 +16,30 @@ function App() {
   } = useAgentChat({
     agent,
     onToolCall: async ({ toolCall, addToolOutput }) => {
-      if (toolCall.toolName === "getLocation") {
+      if (toolCall.toolName !== "getLocation") {
+        return;
+      }
+
+      try {
         const position = await new Promise<GeolocationPosition>(
-          (resolve, reject) =>
-            navigator.geolocation.getCurrentPosition(resolve, reject),
+          (resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          },
         );
+
         addToolOutput({
           toolCallId: toolCall.toolCallId,
-          output: position.toJSON(),
+          output: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          },
+        });
+      } catch {
+        addToolOutput({
+          toolCallId: toolCall.toolCallId,
+          output: {
+            error: "위치 권한이 거절되었습니다.",
+          },
         });
       }
     },
